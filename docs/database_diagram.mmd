@@ -1,0 +1,12 @@
+---
+title: notes_db - esquema v1 (migración 0001)
+---
+erDiagram
+    notes {
+        INT id PK "AUTO_INCREMENT, NOT NULL"
+        VARCHAR(200) title "NOT NULL, CHECK no vacío"
+        TEXT content "NOT NULL, CHECK no vacío"
+        VARCHAR(50) category "NOT NULL, CHECK no vacío, índice ix_notes_category_created_at"
+        DATETIME created_at "NOT NULL, DEFAULT CURRENT_TIMESTAMP (UTC), índice ix_notes_created_at"
+        DATETIME updated_at "NOT NULL, DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP (UTC)"
+    }

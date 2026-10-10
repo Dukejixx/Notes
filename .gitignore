@@ -1,0 +1,27 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Variables de entorno y credenciales (solo se versiona .env.example)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Herramientas
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node (solo si se regenera el diagrama SVG localmente)
+node_modules/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
