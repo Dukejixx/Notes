@@ -10,6 +10,13 @@ La arquitectura separa configuración, acceso a datos, modelos, esquemas, lógic
 de negocio y endpoints, de modo que las operaciones de creación, edición y
 borrado se puedan añadir más adelante sin reestructurar el proyecto.
 
+El repositorio contiene dos partes:
+
+| Parte    | Carpeta                    | Tecnología        | Documentación                          |
+|----------|----------------------------|-------------------|----------------------------------------|
+| Backend  | raíz (`app/`, `alembic/`…) | FastAPI + MySQL   | este README                            |
+| Frontend | [`frontend/`](frontend/)   | Flutter 3.44.9    | [`frontend/README.md`](frontend/README.md) |
+
 ## Tecnologías
 
 | Herramienta                 | Uso                                                         |
@@ -40,6 +47,7 @@ borrado se puedan añadir más adelante sin reestructurar el proyecto.
 ├── alembic/                    # Entorno y migraciones de Alembic
 ├── docs/                       # Diagrama y documentación del modelo de datos
 ├── tests/                      # Pruebas (pytest)
+├── frontend/                   # App Flutter (ver frontend/README.md)
 ├── .env.example                # Plantilla de configuración (sin secretos)
 ├── alembic.ini
 ├── pyproject.toml              # Configuración de Ruff y pytest
@@ -186,6 +194,8 @@ TEST_DB_NAME=notes_test_db
   escapa correctamente. No hace falta codificarla.
 - Las variables de entorno del sistema tienen prioridad sobre `.env`.
 - Si tu `root` local no tiene contraseña, deja `DB_PASSWORD=` vacío.
+- `CORS_ORIGIN_REGEX` (opcional) define desde qué orígenes web se puede llamar a
+  la API. Ver [CORS](#cors-y-frontend-web).
 
 ## Migraciones
 
@@ -227,6 +237,22 @@ python -m uvicorn app.main:app --reload
 Al arrancar, la aplicación comprueba la conexión con MySQL. Si falla, muestra un
 mensaje claro en el log (sin la contraseña) y sigue en marcha; los endpoints
 responden `503` hasta que MySQL esté disponible.
+
+### CORS y frontend web
+
+Los navegadores solo permiten que una página llame a la API si esta autoriza su
+origen. Por defecto se autorizan `http://localhost` y `http://127.0.0.1` en
+cualquier puerto (Flutter web usa un puerto aleatorio en desarrollo), solo con
+el método `GET` y sin credenciales. Para servir el frontend desde otro dominio,
+define en `.env` una expresión regular, por ejemplo:
+
+```dotenv
+CORS_ORIGIN_REGEX=^https://notas\.midominio\.com$
+```
+
+Las apps de escritorio y móviles no están sujetas a CORS.
+
+### Datos de ejemplo
 
 Para cargar datos de prueba, inserta algunas notas desde MySQL Workbench:
 
@@ -388,6 +414,7 @@ con pruebas omitidas no verifica los endpoints.
 | `tests/test_notes.py`           | Respuesta vacía, campos públicos, orden, paginación, límites y parámetros no válidos, fecha de creación asignada por MySQL en UTC |
 | `tests/test_note_stats.py`      | Conteos, porcentajes, empates, filtros de fechas (límites incluidos), días sin notas, respuesta vacía, intervalos no válidos |
 | `tests/test_database_errors.py` | `503` con MySQL inaccesible y `500` ante otros errores, sin filtrar datos sensibles |
+| `tests/test_cors.py`            | Orígenes permitidos y rechazados, y solo método `GET` |
 
 ### Calidad del código
 
@@ -395,6 +422,21 @@ con pruebas omitidas no verifica los endpoints.
 ruff check .           # análisis estático
 ruff format .          # formato
 ```
+
+## Frontend (Flutter)
+
+La app Flutter de [`frontend/`](frontend/) consume los dos endpoints: listado de
+notas con detalle y panel de estadísticas con gráficas. Arranque rápido, con el
+backend en marcha:
+
+```bash
+cd frontend
+flutter pub get
+flutter run -d chrome
+```
+
+Configuración de la URL de la API, emulador de Android, móvil físico, builds y
+pruebas: [`frontend/README.md`](frontend/README.md).
 
 ## Diagrama de la base de datos
 
@@ -413,7 +455,7 @@ npx -p @mermaid-js/mermaid-cli mmdc -i docs/database_diagram.mmd -o docs/databas
 ## Limitaciones conocidas
 
 - Solo hay endpoints de lectura: crear, editar y borrar notas se hace por ahora
-  directamente en MySQL.
+  directamente en MySQL; el frontend solo consulta.
 - Sin autenticación: todas las notas son visibles para cualquier cliente con
   acceso a la API. No la expongas fuera de tu equipo en este estado.
 - Las fechas se manejan en UTC; las estadísticas no admiten otra zona horaria.

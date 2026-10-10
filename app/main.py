@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from typing import cast
 
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, OperationalError, SQLAlchemyError
 
@@ -68,6 +69,13 @@ def create_app() -> FastAPI:
         version="0.1.0",
         description="API REST para consultar notas personales almacenadas en MySQL.",
         lifespan=lifespan,
+    )
+    # La API solo expone lecturas: no se permiten otros métodos ni credenciales.
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=settings.cors_origin_regex,
+        allow_methods=["GET"],
+        allow_headers=["Accept", "Content-Type"],
     )
     application.add_exception_handler(SQLAlchemyError, database_exception_handler)
     application.include_router(notes.router, prefix=settings.api_v1_prefix)

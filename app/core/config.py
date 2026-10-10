@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     db_password: SecretStr = SecretStr("")
     db_name: str = "notes_db"
 
+    # Orígenes (esquema://host:puerto) desde los que un navegador puede llamar a la
+    # API, por ejemplo el frontend Flutter web. Por defecto solo localhost, en
+    # cualquier puerto, porque `flutter run -d chrome` usa un puerto aleatorio.
+    cors_origin_regex: str = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+
     def database_url(self, database: str | None = None) -> URL:
         """Construye la URL de conexión escapando correctamente la contraseña.
 
