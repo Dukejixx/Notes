@@ -1,4 +1,4 @@
-# Requiere Python 3.12
+# Requiere Python 3.12 o 3.13
 # --- Aplicación ---
 fastapi==0.143.0
 uvicorn==0.54.0

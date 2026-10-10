@@ -21,7 +21,7 @@ El repositorio contiene dos partes:
 
 | Herramienta                 | Uso                                                         |
 |-----------------------------|-------------------------------------------------------------|
-| Python 3.12                 | Lenguaje                                                    |
+| Python 3.12 o 3.13          | Lenguaje                                                    |
 | FastAPI + Uvicorn           | API REST, OpenAPI y servidor ASGI                           |
 | MySQL 8.0 (≥ 8.0.16)        | Base de datos                                               |
 | SQLAlchemy 2.0 + PyMySQL    | ORM / consultas y driver de MySQL                           |
@@ -56,7 +56,7 @@ El repositorio contiene dos partes:
 
 ## Requisitos previos
 
-- Python 3.12.
+- Python 3.12 o 3.13 (ambas verificadas).
 - MySQL Server 8.0.16 o superior en ejecución (por ejemplo, la instalación local
   que administras con MySQL Workbench).
 - Git.
@@ -64,8 +64,9 @@ El repositorio contiene dos partes:
 Comprueba la versión de Python:
 
 ```bash
-python3.12 --version          # Linux / macOS
-py -3.12 --version            # Windows
+python3 --version             # Linux / macOS
+py --version                  # Windows
+py --list                     # Windows: versiones instaladas
 ```
 
 ## Instalación
@@ -80,10 +81,10 @@ cd Notes
 ### 2. Crear y activar el entorno virtual
 
 ```bash
-python3.12 -m venv .venv
+python3.13 -m venv .venv      # o python3.12
 ```
 
-En Windows, si `python3.12` no existe, usa `py -3.12 -m venv .venv`.
+En Windows usa `py -3.13 -m venv .venv` (o `py -3.12 -m venv .venv`).
 
 Activarlo en Linux o macOS:
 
@@ -100,7 +101,7 @@ Activarlo en Windows PowerShell:
 > Si PowerShell bloquea el script, ejecuta una vez
 > `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
-Con el entorno activo, `python --version` debe mostrar `Python 3.12.x`.
+Con el entorno activo, `python --version` debe mostrar `Python 3.12.x` o `3.13.x`.
 El directorio `.venv/` está en `.gitignore` y no se sube al repositorio.
 
 ### 3. Instalar las dependencias
